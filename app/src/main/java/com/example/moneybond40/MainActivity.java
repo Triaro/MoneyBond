@@ -2,61 +2,57 @@ package com.example.moneybond40;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Picture;
-import android.media.Image;
+import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.moneybond40.adapter.RecyclerViewAdapter;
 import com.example.moneybond40.data.MyDBHandler;
-import com.example.moneybond40.model.LentName;
+import com.example.moneybond40.model.Name;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
 
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     MyDBHandler db = new MyDBHandler(MainActivity.this);
-
+    private FirebaseAuth mAuth;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
-    private ArrayList<LentName> lentNameArrayList;
+    private ArrayList<Name> nameArrayList;
     private ArrayAdapter<String> arrayAdapter;
     private Context context;
+    private LinearLayoutManager linearLayoutManager;
+    public static int identity=0;
    // private ArrayList<LentName> lentNameList = new ArrayList<>();
+   static final int REQUEST_SELECT_PHONE_NUMBER = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(myToolbar);
         //RecyclerView initialisation
         recyclerView= findViewById(R.id.recyclerView);
@@ -65,37 +61,78 @@ public class MainActivity extends AppCompatActivity {
 
        FloatingActionButton fab = findViewById(R.id.fab);
 
+        nameArrayList = new ArrayList<>();
+
+        if(db.getAllNames()!=null) {
+            // get all names
+            List<Name> nameList = db.getAllNames();
 
 
+            for (Name name : nameList) {
 
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+                Log.d("dbDisplay", "Id " + name.getId() + "\n" +
+                        "Name " + name.getName() + "\n" +
+                        "Money " + name.getMoney() + "Number " + name.getNumber() + "\n");
+                nameArrayList.add(name);
 
-        lentNameArrayList = new ArrayList<>();
-        // get all names
-        final List<LentName> lentNameList= db.getAllNames();
-        for(LentName lentName: lentNameList) {
-
-            Log.d("dbAbhi", "Id " + lentName.getId() + "\n" +
-                    "Name " + lentName.getLentName()+ "\n" +
-                    "Lent Money " + lentName.getLentMoney() + "\n");
-            lentNameArrayList.add(lentName);
-           //db.deleteName(lentName.getId());
+                //db.deleteName(lentName.getId());
+            }
         }
         //Using RecyclerView
-        recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, lentNameArrayList);
+        recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, nameArrayList);
         recyclerView.setAdapter(recyclerViewAdapter);
 
+        class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
+            private Drawable mDivider;
 
-        fab.setOnClickListener(new View.OnClickListener() {
+            public SimpleDividerItemDecoration(Context context) {
+                mDivider = context.getResources().getDrawable(R.drawable.divider);
+
+            }
+
+            @Override
+            public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                int left = 250;
+                int right = parent.getWidth() - parent.getPaddingRight();
+
+                int childCount = parent.getChildCount();
+                for (int i = 0; i < childCount-1; i++) {
+                    View child = parent.getChildAt(i);
+
+                    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                    int top = child.getBottom() + params.bottomMargin;
+                    int bottom = top + mDivider.getIntrinsicHeight();
+
+                    mDivider.setBounds(left, top, right, bottom);
+                    mDivider.draw(c);
+                }
+            }
+        }
+
+
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(
+                getApplicationContext()
+        ));
+
+
+
+
+
+                  fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                  // Start an activity for the user to pick a phone number from contacts
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
+                    }
 
 
 
-                Intent intent = new Intent(MainActivity.this, EnterDetails.class);
 
-                  startActivityForResult(intent,1);
-//
+
 
 
             }
@@ -119,14 +156,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, Help.class));
                 return true;
             case R.id.deleteAll:
-                lentNameArrayList = new ArrayList<>();
+                nameArrayList = new ArrayList<>();
                 // get all names
-                final List<LentName> lentNameList= db.getAllNames();
-                for(LentName lentName: lentNameList) {
-                    db.deleteName(lentName.getId());
+                final List<Name> nameList = db.getAllNames();
+                for(Name name : nameList) {
+                    db.deleteName(name.getId());
+                    db.close();
 
                 }
-                notifyAll();
+                Intent intent2 = new Intent(this, MainActivity.class);
+                startActivity(intent2);
+                identity=0;
+                return true;
+            case R.id.logOut:
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(this, RegisterNumber.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -138,25 +184,46 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case (1) : {
-                if (resultCode == MainActivity.RESULT_OK) {
-                    String name = data.getStringExtra("RName");
-                    String money = data.getStringExtra("RMoney");
 
-                    //Creating a lentName for db
-                    LentName abhi= new LentName();
-                    abhi.setLentMoney(money);
-                    abhi.setLentName(name);
+        if (requestCode == REQUEST_SELECT_PHONE_NUMBER && resultCode == RESULT_OK) {
+            // Get the URI and query the content provider for the phone number
+            Uri contactUri = data.getData();
+            String id, name, phone, hasPhone;
+            int idx;
+            Cursor cursor = getContentResolver().query(contactUri, null, null, null, null);
+            // If the cursor returned is valid, get the phone number
+            if (cursor != null && cursor.moveToFirst()) {
+                idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+                id = cursor.getString(idx);
 
-                    //Adding a lentName to db
-                    db.addName(abhi);
-                    lentNameArrayList.add(lentNameArrayList.size(),abhi);
-                    // Notify the adapter that an item inserted
-                    recyclerViewAdapter.notifyItemInserted(lentNameArrayList.size());
-                }
-                break;
+                idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                name = cursor.getString(idx);
+
+                idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                hasPhone = cursor.getString(idx);
+
+                identity++;
+                Name abhi= new Name();
+                abhi.setId(identity);
+                abhi.setMoney("0");
+                abhi.setNumber(hasPhone);
+                abhi.setName(name);
+
+                //Adding a customerName to db
+                db.addName(abhi);
+                db.close();
+                nameArrayList.add(nameArrayList.size(),abhi);
+                // Notify the adapter that an item inserted
+                recyclerViewAdapter.notifyItemInserted(nameArrayList.size());
+
+
             }
         }
     }
+
+
+
+
+
 }
+

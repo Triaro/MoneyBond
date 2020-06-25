@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/call"
+        android:title="call" />
+    <item
+        android:id="@+id/changePicture"
+        android:title="change picture" />
+    <item
+        android:id="@+id/del"
+        android:title="remove" />
+    <item
+        android:id="@+id/share"
+        android:title="share" />
+</menu>
