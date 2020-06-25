@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "145755392344",
+    "firebase_url": "https://moneybond-7457b.firebaseio.com",
+    "project_id": "moneybond-7457b",
+    "storage_bucket": "moneybond-7457b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145755392344:android:822d57f5759214e7f6fd2d",
+        "android_client_info": {
+          "package_name": "com.example.moneybond40"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145755392344-jm9q4tdej76006ek2ga68f1nr1mbt2os.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moneybond40",
+            "certificate_hash": "99c8042cb53af05ebd1c23c8050441352bdce7aa"
+          }
+        },
+        {
+          "client_id": "145755392344-2un0gk527a3775gd705o5jr3qi98idhh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9YiPSspIZS8npZ70sIG54DXFsPiaEt3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145755392344-2un0gk527a3775gd705o5jr3qi98idhh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
