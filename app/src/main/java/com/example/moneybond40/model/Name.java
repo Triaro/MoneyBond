@@ -3,12 +3,12 @@ package com.example.moneybond40.model;
 public class Name {
 
     private  int id;
-    private  int idH;
+
     private  String name;
     private String money;
     private String number;
-    private String amount;
-    private String time;
+    private int colorStatus;
+    private String status;
 
     public Name(int id) {
         this.id=id;
@@ -35,9 +35,7 @@ public class Name {
     public int getId() {
         return id;
     }
-    public int getIdH() {
-        return idH;
-    }
+
 
     public String getName() {
         return name;
@@ -49,13 +47,11 @@ public class Name {
 
     public String getNumber() { return number; }
 
-    public String getAmount() { return amount; }
+    public int getColorStatus() { return colorStatus; }
 
-    public String getTime() { return time; }
+    public String getStatus() { return status; }
 
     public void setId(int id) {this.id = id;  }
-
-    public void setIdH(int idH) {this.idH = idH;  }
 
     public void setName(String name) {
         this.name = name;
@@ -65,7 +61,7 @@ public class Name {
 
     public void setNumber(String number) {this.number = number; }
 
-    public void setAmount(String amount) {this.amount = amount; }
+    public void setColorStatus(int colorStatus) {this.colorStatus = colorStatus; }
 
-    public void setTime(String time) {this.time = time; }
+    public void setStatus(String status) {this.status = status; }
 }

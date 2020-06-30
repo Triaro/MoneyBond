@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,24 +24,34 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.moneybond40.adapter.RecyclerViewAdapter2;
+//import com.example.moneybond40.adapter.RecyclerViewAdapter2;
+import com.example.moneybond40.adapter.RecyclerViewAdapter;
 import com.example.moneybond40.data.MyDBHandler;
-import com.example.moneybond40.data.MyDBHandlerHistory;
+
 import com.example.moneybond40.model.Name;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+
+
+
 public class CustomerDetails extends AppCompatActivity {
-    MyDBHandler db1 = new MyDBHandler(this);
-    MyDBHandlerHistory db = new MyDBHandlerHistory(this);
-    private RecyclerView recyclerView2;
-    private RecyclerViewAdapter2 recyclerViewAdapter2;
+
+
+
+    MyDBHandler db = new MyDBHandler(this);
     public static ArrayList<Name> historyArrayList;
+    public static int status=1;
     private static final int PICK_IMAGE = 100;
+    private static final int PICK_MONEY = 7;
+    public List<Name> nameList;
+    private RecyclerViewAdapter recyclerViewAdapter;
 
-
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,44 +60,56 @@ public class CustomerDetails extends AppCompatActivity {
 
         setSupportActionBar(myToolbar);
         Log.d("check", "Customer details reached");
-
-        Intent intent1 = getIntent();
+        Intent intent1 =getIntent();
+        int position = intent1.getIntExtra("RPosition",0);
         String number = intent1.getStringExtra("RNumber");
         String name = intent1.getStringExtra("RName");
-        String money = intent1.getStringExtra("RMoney");
+        TextView status1= findViewById(R.id.status);
+        TextView netMoney1 = findViewById(R.id.netMoney);
+        TextView rupee2 = findViewById(R.id.rupee2);
+        nameList= db.getAllNames();
+        Name name1 = nameList.get(position);
+        if(name1.getMoney()==null) {
+            status1.setText("Your transaction will be shown here");
+            netMoney1.setText("0");
+
+        }
+        else{
+            netMoney1.setText(name1.getMoney());
+            status1.setText(name1.getStatus());
+        }
+
         //RecyclerView initialisation
-        recyclerView2= findViewById(R.id.recyclerView2);
-        recyclerView2.setHasFixedSize(true);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
+//        RecyclerView recyclerView2 = findViewById(R.id.recyclerView2);
+//        recyclerView2.setHasFixedSize(true);
+//        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
 
 
         TextView CustomerName = findViewById(R.id.customerName);
         CustomerName.setText(name);
         TextView CustomerNumber = findViewById(R.id.customerNumber);
         CustomerNumber.setText(number);
-        TextView CustomerMoney = findViewById(R.id.netMoney);
-        CustomerMoney.setText(money);
         getSupportActionBar().setTitle(" ");
+if(name1.getMoney().equals("0"))
+{
+    netMoney1.setTextColor(getResources().getColor(R.color.divider));
+    rupee2.setTextColor(getResources().getColor(R.color.divider));
+}
+else if(name1.getColorStatus()==0) {
+    netMoney1.setTextColor(getResources().getColor(R.color.red));
+    rupee2.setTextColor(getResources().getColor(R.color.red));
+}
+else{
+    netMoney1.setTextColor(getResources().getColor(R.color.green));
+    rupee2.setTextColor(getResources().getColor(R.color.green));
+}
 
-        historyArrayList = new ArrayList<>();
-        // get all names
-        List<Name> historyList = db.getHistory();
-
-        for(Name history : historyList) {
-
-            Log.d("dbDisplay", "Amount " + history.getAmount() + "Time " + history.getTime()+ "\n");
-            historyArrayList.add(history);
-
-            //db.deleteName(lentName.getId());
-        }
-        //Using RecyclerView
-        recyclerViewAdapter2 = new RecyclerViewAdapter2(CustomerDetails.this, historyArrayList);
-        recyclerView2.setAdapter(recyclerViewAdapter2);
         ImageButton back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent i=new Intent(CustomerDetails.this,MainActivity.class);
+                startActivity(i);
             }
         });
 
@@ -96,7 +120,9 @@ public class CustomerDetails extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intentAdd= new Intent(CustomerDetails.this, AddMoney.class);
                 intentAdd.putExtra("status","Enter the amount you lent");
-                startActivityForResult(intentAdd,77);
+                status=1;
+                startActivityForResult(intentAdd,PICK_MONEY);
+
 
             }
         });
@@ -105,10 +131,14 @@ public class CustomerDetails extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intentAdd= new Intent(CustomerDetails.this, AddMoney.class);
                 intentAdd.putExtra("status","Enter the amount you borrowed");
-                startActivity(intentAdd);
+                status=0;
+                startActivityForResult(intentAdd, PICK_MONEY);
+
 
             }
         });
+
+
 
     }
 
@@ -135,13 +165,11 @@ public class CustomerDetails extends AppCompatActivity {
                 Intent intent1 = getIntent();
                 int id = intent1.getIntExtra("RId", 0);
                 int position = intent1.getIntExtra("RPosition",0);
-                List<Name> nameList = db1.getAllNames();
-                Name name = nameList.get(id);
-                // Remove the item on remove/button click
+                List<Name> nameList = db.getAllNames();
+                 // Remove the item on remove/button click
                 nameList.remove(position);
-                db1.deleteName(id);
+                db.deleteName(id);
                 notifyAll();
-
                 finish();
                 return true;
             case R.id.share:
@@ -154,6 +182,7 @@ public class CustomerDetails extends AppCompatActivity {
 
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -172,15 +201,100 @@ public class CustomerDetails extends AppCompatActivity {
             imageView.setImageURI(null);
             imageView.setImageURI(Uri.parse(stringUri));
         }
+        if (requestCode == PICK_MONEY)
+         { //LayoutInflater inflater = getLayoutInflater();
+//             View myView = inflater.inflate(R.layout.row, null);
+             TextView status1= findViewById(R.id.status);
+             TextView netMoney1 = findViewById(R.id.netMoney);
+//             TextView Money = myView.findViewById(R.id.Money);
+//             TextView rupee1 = myView.findViewById(R.id.rupee1);
+             TextView rupee2 = findViewById(R.id.rupee2);
+             nameList= db.getAllNames();
+             Intent intent1 =getIntent();
+             int position = intent1.getIntExtra("RPosition",0);
+             Name name = nameList.get(position);
+             if(name.getMoney()==null) {
+                 status1.setText("There is no transaction due right now with "+ name.getName());
+                 netMoney1.setText("");
 
-        if (requestCode == 77) {
-            if (resultCode == Activity.RESULT_OK) {
-                String rMoney = data.getStringExtra("money");
-                TextView netMoney = findViewById(R.id.netMoney);
-                String moneyF = "₹" + rMoney;
-                netMoney.setText(moneyF);
-            }
+             }
+             else{
+                 netMoney1.setText(name.getMoney());
+                 status1.setText(name.getStatus());
+             }
+
+            String money2=data.getExtras().getString("money");
+            int money = Integer.parseInt(money2);
+            String netMoney=netMoney1.getText().toString();
+            int prevMoney = Integer.parseInt(netMoney);
+
+           if(status==1) {
+               if(status1.getText().equals("You have Borrowed from "+ name.getName()))
+                   prevMoney=-prevMoney;
+               int finalMoney = prevMoney + money;
+               if(finalMoney==0) {
+                   status1.setText("Your current transaction status with" + name.getName()+" is");
+                   netMoney1.setTextColor(getResources().getColor(R.color.divider));
+                   rupee2.setTextColor(getResources().getColor(R.color.divider));
+               }
+               else if(finalMoney<0)
+               {
+                   status1.setText("You have Borrowed from "+ name.getName());
+                   finalMoney=-finalMoney;
+                   name.setColorStatus(0);
+                   name.setStatus("You have Borrowed from "+ name.getName());
+                   netMoney1.setTextColor(getResources().getColor(R.color.red));
+                   rupee2.setTextColor(getResources().getColor(R.color.red));
+
+               }
+               else {
+                   status1.setText("You have Lent "+ name.getName());
+                   name.setColorStatus(1);
+                   name.setStatus("You have Lent "+ name.getName());
+                   netMoney1.setTextColor(getResources().getColor(R.color.green));
+                   rupee2.setTextColor(getResources().getColor(R.color.green));
+               }
+
+               netMoney1.setText(String.valueOf(finalMoney));
+               name.setMoney(String.valueOf(finalMoney));
+               db.updateName(name);
+
+               Log.d("check7","Name updated of id "+name.getId()+ " with amount "+name.getMoney());
+           }
+           else{
+               if(status1.getText().equals("You have Borrowed from "+ name.getName()))
+                   prevMoney=-prevMoney;
+               int finalMoney = prevMoney - money;
+               if(finalMoney==0) {
+                   status1.setText("Your current transaction status with "+ name.getName()+" is");
+                   netMoney1.setTextColor(getResources().getColor(R.color.divider));
+                   rupee2.setTextColor(getResources().getColor(R.color.divider));
+               }
+               else if(finalMoney<0)
+               {
+                status1.setText("You have Borrowed from "+ name.getName());
+                finalMoney=-finalMoney;
+                name.setColorStatus(0);
+                netMoney1.setTextColor(getResources().getColor(R.color.red));
+                rupee2.setTextColor(getResources().getColor(R.color.red));
+                name.setStatus("You have Borrowed from "+ name.getName());
+
+               }
+               else{status1.setText("You have Lent "+ name.getName());
+                   name.setColorStatus(1);
+                   netMoney1.setTextColor(getResources().getColor(R.color.green));
+                   rupee2.setTextColor(getResources().getColor(R.color.green));
+                   name.setStatus("You have Lent "+ name.getName());
+               }
+
+               netMoney1.setText(String.valueOf(finalMoney));
+               name.setMoney(String.valueOf(finalMoney));
+               db.updateName(name);
+           }
+            MainActivity.dataChangeStatus=1;
         }
+
+
     }
 }
 

@@ -16,14 +16,14 @@
             android:id="@+id/Money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="72dp"
-            android:layout_marginRight="72dp"
-            android:text="₹0"
-            android:textColor="#0EE681"
-            android:textSize="18sp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            android:text="0"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.482" />
 
         <TextView
             android:id="@+id/Name"
@@ -39,13 +39,23 @@
 
         <ImageView
             android:id="@+id/icon_button"
-            android:layout_width="52dp"
-            android:layout_height="56dp"
+            android:layout_width="60dp"
+            android:layout_height="61dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/abstractuser" />
+
+        <TextView
+            android:id="@+id/rupee1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₹"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/Money"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

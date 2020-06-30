@@ -18,7 +18,6 @@
         <activity android:name=".AddMoney"></activity>
         <activity android:name=".VerifyPhoneActivity" />
         <activity android:name=".RegisterNumber" />
-        <activity android:name=".History" />
         <activity android:name=".Help" />
         <activity
             android:name=".Settings"

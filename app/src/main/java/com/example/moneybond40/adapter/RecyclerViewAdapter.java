@@ -25,6 +25,7 @@ import com.example.moneybond40.model.Name;
 
 import java.util.List;
 
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private Context context;
     private List<Name> nameList;
@@ -58,8 +59,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.Name.setText(name.getName());
         holder.Money.setText(name.getMoney());
-
-
+        if(name.getMoney().equals("0"))
+        {
+            holder.Money.setTextColor(context.getResources().getColor(R.color.divider));
+            holder.rupee1.setTextColor(context.getResources().getColor(R.color.divider));
+        }
+        else if(name.getColorStatus()==0){
+            holder.rupee1.setTextColor(context.getResources().getColor(R.color.red));
+            holder.Money.setTextColor(context.getResources().getColor(R.color.red));
+        }
+        else{
+            holder.rupee1.setTextColor(context.getResources().getColor(R.color.green));
+            holder.Money.setTextColor(context.getResources().getColor(R.color.green));
+        }
 //        holder.del.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -140,6 +152,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView Name;
         public TextView Money;
+        public TextView rupee1;
         public EditText money1;
         public ImageView iconButton ;
         public ImageButton del;
@@ -154,6 +167,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             Name = itemView.findViewById(R.id.Name);
             Money = itemView.findViewById(R.id.Money);
+            rupee1 = itemView.findViewById(R.id.rupee1);
             iconButton = itemView.findViewById(R.id.icon_button);
             del = itemView.findViewById(R.id.del);
             add= itemView.findViewById(R.id.lentButton);
@@ -175,7 +189,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             String customerMoney= name.getMoney();
             String customerNumber= name.getNumber();
 
-
+            Toast.makeText(context,"the id is "+ name.getId()+" Amount is "+name.getMoney()+" Position is "+position,Toast.LENGTH_LONG).show();
             Intent intent = new Intent(context, CustomerDetails.class);
             intent.putExtra("RId",customerId);
             intent.putExtra("RPosition",position);

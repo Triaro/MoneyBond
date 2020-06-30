@@ -1,5 +1,7 @@
 package com.example.moneybond40;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -35,13 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     MyDBHandler db = new MyDBHandler(MainActivity.this);
     private FirebaseAuth mAuth;
-    private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
-    private ArrayList<Name> nameArrayList;
-    private ArrayAdapter<String> arrayAdapter;
-    private Context context;
-    private LinearLayoutManager linearLayoutManager;
-    public static int identity=0;
+    public ArrayList<Name> nameArrayList;
+    public static int dataChangeStatus=0;
+
    // private ArrayList<LentName> lentNameList = new ArrayList<>();
    static final int REQUEST_SELECT_PHONE_NUMBER = 1;
     @Override
@@ -55,12 +55,19 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(myToolbar);
         //RecyclerView initialisation
-        recyclerView= findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
        FloatingActionButton fab = findViewById(R.id.fab);
+        TextView rupee1=findViewById(R.id.rupee1);
+        TextView Money=findViewById(R.id.Money);
 
+
+if(dataChangeStatus==1)
+{
+    recyclerViewAdapter.notifyDataSetChanged();
+}
         nameArrayList = new ArrayList<>();
 
         if(db.getAllNames()!=null) {
@@ -77,10 +84,15 @@ public class MainActivity extends AppCompatActivity {
 
                 //db.deleteName(lentName.getId());
             }
+
+
         }
+
         //Using RecyclerView
         recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, nameArrayList);
         recyclerView.setAdapter(recyclerViewAdapter);
+
+
 
         class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
             private Drawable mDivider;
@@ -141,6 +153,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -162,11 +177,9 @@ public class MainActivity extends AppCompatActivity {
                 for(Name name : nameList) {
                     db.deleteName(name.getId());
                     db.close();
-
                 }
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
-                identity=0;
                 return true;
             case R.id.logOut:
                 FirebaseAuth.getInstance().signOut();
@@ -201,20 +214,18 @@ public class MainActivity extends AppCompatActivity {
 
                 idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 hasPhone = cursor.getString(idx);
-
-                identity++;
                 Name abhi= new Name();
-                abhi.setId(identity);
                 abhi.setMoney("0");
                 abhi.setNumber(hasPhone);
                 abhi.setName(name);
+                abhi.setStatus("Your Transaction will be shown here");
 
                 //Adding a customerName to db
                 db.addName(abhi);
-                db.close();
                 nameArrayList.add(nameArrayList.size(),abhi);
                 // Notify the adapter that an item inserted
                 recyclerViewAdapter.notifyItemInserted(nameArrayList.size());
+
 
 
             }

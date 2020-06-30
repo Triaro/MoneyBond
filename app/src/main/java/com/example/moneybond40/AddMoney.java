@@ -18,21 +18,23 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.moneybond40.adapter.RecyclerViewAdapter;
-import com.example.moneybond40.adapter.RecyclerViewAdapter2;
+//import com.example.moneybond40.adapter.RecyclerViewAdapter2;
 import com.example.moneybond40.data.MyDBHandler;
-import com.example.moneybond40.data.MyDBHandlerHistory;
 import com.example.moneybond40.model.Name;
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.w3c.dom.NameList;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AddMoney extends AppCompatActivity {
     public static int identityH=0;
-    MyDBHandlerHistory db = new MyDBHandlerHistory(AddMoney.this);
+    MyDBHandler db = new MyDBHandler(AddMoney.this);
     private RecyclerView recyclerView2;
-    private RecyclerViewAdapter2 recyclerViewAdapter2;
-
+    //private RecyclerViewAdapter2 recyclerViewAdapter2;
+    private List<Name> historyList;
 
 
     @Override
@@ -44,18 +46,8 @@ public class AddMoney extends AppCompatActivity {
         String statusR = intent.getStringExtra("status");
         TextView status = findViewById(R.id.status);
         status.setText(statusR);
-        final EditText money= findViewById(R.id.enteredMoney);
-        Name history= new Name();
-//        history.setIdH(identityH);
-//        identityH++;
-        history.setAmount(money.toString());
-        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        history.setTime(currentDateTimeString);
-        Log.d("row","row inserted");
-        //Adding history to db
-        db.addHistory(history);
-        Log.d("check2", "AddMoney reached");
-        CustomerDetails.historyArrayList.add(history);
+
+
         // Notify the adapter that an item inserted
         //recyclerViewAdapter2.notifyItemInserted(CustomerDetails.historyArrayList.size());
 
@@ -63,6 +55,16 @@ public class AddMoney extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                EditText money= findViewById(R.id.enteredMoney);
+//                Name history= historyList.get(CustomerDetails.position);
+//                history.setAmount(money.toString());
+//                String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+//                history.setTime("₹" + currentDateTimeString);
+//
+//                //Adding history to db
+//                db.addHistory(history);
+//                Log.d("check2", "AddMoney reached");
+//                CustomerDetails.historyArrayList.add(history);
                 Intent retData=new Intent();
                 String money1= money.getText().toString();
                 retData.putExtra("money",money1);
