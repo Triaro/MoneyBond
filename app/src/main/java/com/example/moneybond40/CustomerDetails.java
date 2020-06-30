@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.example.moneybond40.data.MyDBHandler;
 
 import com.example.moneybond40.model.Name;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -96,12 +98,12 @@ if(name1.getMoney().equals("0"))
     rupee2.setTextColor(getResources().getColor(R.color.divider));
 }
 else if(name1.getColorStatus()==0) {
-    netMoney1.setTextColor(getResources().getColor(R.color.red));
-    rupee2.setTextColor(getResources().getColor(R.color.red));
-}
-else{
     netMoney1.setTextColor(getResources().getColor(R.color.green));
     rupee2.setTextColor(getResources().getColor(R.color.green));
+}
+else{
+    netMoney1.setTextColor(getResources().getColor(R.color.red));
+    rupee2.setTextColor(getResources().getColor(R.color.red));
 }
 
         ImageButton back = findViewById(R.id.back);
@@ -154,20 +156,24 @@ else{
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.call:
-
+                Intent intent1 =getIntent();
+                int position = intent1.getIntExtra("RPosition",0);
+                Name name = nameList.get(position);
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" +name.getNumber()));
+                startActivity(callIntent);
                 return true;
             case R.id.changePicture:
-
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i,PICK_IMAGE);
                 return true;
             case R.id.del:
-                Intent intent1 = getIntent();
-                int id = intent1.getIntExtra("RId", 0);
-                int position = intent1.getIntExtra("RPosition",0);
+                Intent intentCall = getIntent();
+                int id = intentCall.getIntExtra("RId", 0);
+                int position1 = intentCall.getIntExtra("RPosition",0);
                 List<Name> nameList = db.getAllNames();
                  // Remove the item on remove/button click
-                nameList.remove(position);
+                nameList.remove(position1);
                 db.deleteName(id);
                 notifyAll();
                 finish();
@@ -188,18 +194,26 @@ else{
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            ImageView imageView = findViewById(R.id.icon_button);
 
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            String stringUri = selectedImage.getPath();
-            imageView.setImageURI(null);
-            imageView.setImageURI(Uri.parse(stringUri));
+//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+//            cursor.moveToFirst();
+//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//            String picturePath = cursor.getString(columnIndex);
+//            cursor.close();
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),selectedImage);
+                ImageView imageView = findViewById(R.id.dp);
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //   imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+//
+//             String stringUri = selectedImage.getPath();
+//             imageView.setImageURI(Uri.parse(stringUri));
         }
         if (requestCode == PICK_MONEY)
          { //LayoutInflater inflater = getLayoutInflater();
@@ -243,16 +257,16 @@ else{
                    finalMoney=-finalMoney;
                    name.setColorStatus(0);
                    name.setStatus("You have Borrowed from "+ name.getName());
-                   netMoney1.setTextColor(getResources().getColor(R.color.red));
-                   rupee2.setTextColor(getResources().getColor(R.color.red));
+                   netMoney1.setTextColor(getResources().getColor(R.color.green));
+                   rupee2.setTextColor(getResources().getColor(R.color.green));
 
                }
                else {
                    status1.setText("You have Lent "+ name.getName());
                    name.setColorStatus(1);
                    name.setStatus("You have Lent "+ name.getName());
-                   netMoney1.setTextColor(getResources().getColor(R.color.green));
-                   rupee2.setTextColor(getResources().getColor(R.color.green));
+                   netMoney1.setTextColor(getResources().getColor(R.color.red));
+                   rupee2.setTextColor(getResources().getColor(R.color.red));
                }
 
                netMoney1.setText(String.valueOf(finalMoney));
@@ -275,15 +289,15 @@ else{
                 status1.setText("You have Borrowed from "+ name.getName());
                 finalMoney=-finalMoney;
                 name.setColorStatus(0);
-                netMoney1.setTextColor(getResources().getColor(R.color.red));
-                rupee2.setTextColor(getResources().getColor(R.color.red));
+                netMoney1.setTextColor(getResources().getColor(R.color.green));
+                rupee2.setTextColor(getResources().getColor(R.color.green));
                 name.setStatus("You have Borrowed from "+ name.getName());
 
                }
                else{status1.setText("You have Lent "+ name.getName());
                    name.setColorStatus(1);
-                   netMoney1.setTextColor(getResources().getColor(R.color.green));
-                   rupee2.setTextColor(getResources().getColor(R.color.green));
+                   netMoney1.setTextColor(getResources().getColor(R.color.red));
+                   rupee2.setTextColor(getResources().getColor(R.color.red));
                    name.setStatus("You have Lent "+ name.getName());
                }
 

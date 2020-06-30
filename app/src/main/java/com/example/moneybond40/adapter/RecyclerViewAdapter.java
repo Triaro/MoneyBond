@@ -65,12 +65,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.rupee1.setTextColor(context.getResources().getColor(R.color.divider));
         }
         else if(name.getColorStatus()==0){
-            holder.rupee1.setTextColor(context.getResources().getColor(R.color.red));
-            holder.Money.setTextColor(context.getResources().getColor(R.color.red));
-        }
-        else{
             holder.rupee1.setTextColor(context.getResources().getColor(R.color.green));
             holder.Money.setTextColor(context.getResources().getColor(R.color.green));
+        }
+        else{
+            holder.rupee1.setTextColor(context.getResources().getColor(R.color.red));
+            holder.Money.setTextColor(context.getResources().getColor(R.color.red));
         }
 //        holder.del.setOnClickListener(new View.OnClickListener() {
 //            @Override

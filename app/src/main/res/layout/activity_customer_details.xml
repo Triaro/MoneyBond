@@ -66,6 +66,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar2">
 
+        <ImageView
+            android:id="@+id/dp"
+            android:layout_width="188dp"
+            android:layout_height="188dp"
+            app:layout_constraintBottom_toTopOf="@+id/status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal" />
+
         <TextView
             android:id="@+id/status"
             android:layout_width="wrap_content"
@@ -74,34 +85,41 @@
             android:text="You have done transaction of"
             android:textAllCaps="false"
             android:textColor="#000000"
-            android:textSize="36sp"
+            android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.615"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/rupee2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="casual"
-            android:text="₹"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/netMoney"
-            app:layout_constraintTop_toBottomOf="@+id/status" />
-
-        <TextView
-            android:id="@+id/netMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="casual"
-            android:text="TextView"
-            android:textSize="36sp"
-            android:textStyle="bold"
+            android:background="#FAFAFA"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/status" />
+            app:layout_constraintTop_toBottomOf="@+id/status">
+
+            <TextView
+                android:id="@+id/rupee2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="175dp"
+                android:fontFamily="casual"
+                android:text="₹"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/netMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:text="TextView"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
