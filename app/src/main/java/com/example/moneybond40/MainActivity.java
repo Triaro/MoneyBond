@@ -1,7 +1,5 @@
 package com.example.moneybond40;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 
@@ -178,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settings:
                 startActivity(new Intent(this, Settings.class));
                 return true;
-            case R.id.help:
-                startActivity(new Intent(this, Help.class));
+            case R.id.info:
+                startActivity(new Intent(this, AppInfo.class));
                 return true;
             case R.id.refresh:
                 finish();

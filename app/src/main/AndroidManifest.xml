@@ -21,7 +21,7 @@
         <activity android:name=".AddMoney"/>
         <activity android:name=".VerifyPhoneActivity" />
         <activity android:name=".RegisterNumber" />
-        <activity android:name=".Help" />
+        <activity android:name=".AppInfo" android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".Settings"
             android:label="@string/title_activity_settings"

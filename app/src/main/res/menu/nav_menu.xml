@@ -11,11 +11,11 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete All" />
     <item
-        android:id="@+id/help"
-        android:title="Help" />
-    <item
         android:id="@+id/refresh"
         android:title="Refresh" />
+    <item
+        android:id="@+id/info"
+        android:title="App Info" />
     <item
         android:id="@+id/logOut"
         android:title="Log Out" />

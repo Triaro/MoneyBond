@@ -4,6 +4,7 @@
     <color name="green">#02F863</color>
     <color name="red">#F80202</color>
     <color name="colorPrimaryDark">#000000</color>
+    <color name="white">#ffffff</color>
     <color name="colorAccent">#00D81B60</color>
     <color name="divider">#8FC2C2C2</color>
 </resources>

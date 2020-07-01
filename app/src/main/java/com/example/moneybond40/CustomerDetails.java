@@ -1,5 +1,6 @@
 package com.example.moneybond40;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -51,6 +53,7 @@ public class CustomerDetails extends AppCompatActivity {
     public static ArrayList<Name> historyArrayList;
     public static int status=1;
     private static final int PICK_IMAGE = 100;
+    private static final int CAPTURE_IMAGE = 200;
     private static final int PICK_MONEY = 7;
     public List<Name> nameList;
     private RecyclerViewAdapter recyclerViewAdapter;
@@ -172,13 +175,41 @@ else{
                 startActivity(callIntent);
                 return true;
             case R.id.changePicture:
-                Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                i.putExtra("crop", "true");
-                i.putExtra("outputX", 300);
-                i.putExtra("outputY", 300);
-                i.putExtra("scale", true);
-                i.putExtra("return-data", true);
-                startActivityForResult(i,PICK_IMAGE);
+                final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Choose your profile picture");
+
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+
+                        if (options[item].equals("Take Photo")) {
+
+                            Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                            takePicture.putExtra("crop", "true");
+//                            takePicture.putExtra("outputX", 300);
+//                            takePicture.putExtra("outputY", 300);
+//                            takePicture.putExtra("scale", true);
+//                            takePicture.putExtra("return-data", true);
+                            startActivityForResult(takePicture,CAPTURE_IMAGE);
+
+                        } else if (options[item].equals("Choose from Gallery")) {
+                            Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            i.putExtra("crop", "true");
+                            i.putExtra("outputX", 300);
+                            i.putExtra("outputY", 300);
+                            i.putExtra("scale", true);
+                            i.putExtra("return-data", true);
+                            startActivityForResult(i , PICK_IMAGE);
+
+                        } else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
                 return true;
             case R.id.del:
                 Intent intentCall = getIntent();
@@ -206,14 +237,14 @@ else{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-
-//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
+//            Uri selectedImage = data.getData();
+//
+////            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+////            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+////            cursor.moveToFirst();
+////            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+////            String picturePath = cursor.getString(columnIndex);
+////            cursor.close();
             Bitmap bitmap;
 
                 bitmap  = (Bitmap) data.getExtras().get("data");
@@ -230,14 +261,21 @@ else{
                 db.notify();
 
 
-
-
-            //   imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-//
-//             String stringUri = selectedImage.getPath();
-//             imageView.setImageURI(Uri.parse(stringUri));
-
         }
+        if (requestCode == CAPTURE_IMAGE && resultCode == RESULT_OK && data != null) {
+            ImageView imageView = findViewById(R.id.dp);
+            Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+             imageView.setImageBitmap(selectedImage);
+                    Intent intent1 =getIntent();
+                    int position = intent1.getIntExtra("RPosition",0);
+                    Name name = nameList.get(position);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100,stream);
+                    name.setImage(stream.toByteArray());
+                    db.updateName(name);
+                    notify();
+                }
+
         if (requestCode == PICK_MONEY)
          { //LayoutInflater inflater = getLayoutInflater();
 //             View myView = inflater.inflate(R.layout.row, null);
