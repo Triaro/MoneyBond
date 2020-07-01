@@ -1,6 +1,12 @@
 package com.example.moneybond40.model;
 
-public class Name {
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
+
+public class Name extends Activity {
 
     private  int id;
 
@@ -9,6 +15,7 @@ public class Name {
     private String number;
     private int colorStatus;
     private String status;
+    private byte[] image;
 
     public Name(int id) {
         this.id=id;
@@ -51,6 +58,11 @@ public class Name {
 
     public String getStatus() { return status; }
 
+    public byte[] getImage() {
+            return image;
+    }
+//        return BitmapFactory.decodeByteArray(image1, 0, image1.length);
+
     public void setId(int id) {this.id = id;  }
 
     public void setName(String name) {
@@ -64,4 +76,9 @@ public class Name {
     public void setColorStatus(int colorStatus) {this.colorStatus = colorStatus; }
 
     public void setStatus(String status) {this.status = status; }
+
+    public void setImage(byte[] image) {
+            this.image=image;
+    }
+
 }

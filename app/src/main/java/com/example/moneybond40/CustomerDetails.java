@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,6 +34,7 @@ import com.example.moneybond40.data.MyDBHandler;
 
 import com.example.moneybond40.model.Name;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +68,7 @@ public class CustomerDetails extends AppCompatActivity {
         int position = intent1.getIntExtra("RPosition",0);
         String number = intent1.getStringExtra("RNumber");
         String name = intent1.getStringExtra("RName");
+        byte[] image = intent1.getByteArrayExtra("RImage");
         TextView status1= findViewById(R.id.status);
         TextView netMoney1 = findViewById(R.id.netMoney);
         TextView rupee2 = findViewById(R.id.rupee2);
@@ -91,6 +94,11 @@ public class CustomerDetails extends AppCompatActivity {
         CustomerName.setText(name);
         TextView CustomerNumber = findViewById(R.id.customerNumber);
         CustomerNumber.setText(number);
+        ImageView dp=findViewById(R.id.dp);
+        if(image!=null)
+        dp.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
+        else
+            dp.setImageResource(R.drawable.abstractuser);
         getSupportActionBar().setTitle(" ");
 if(name1.getMoney().equals("0"))
 {
@@ -110,8 +118,8 @@ else{
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(CustomerDetails.this,MainActivity.class);
-                startActivity(i);
+                finish();
+
             }
         });
 
@@ -165,6 +173,11 @@ else{
                 return true;
             case R.id.changePicture:
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                i.putExtra("crop", "true");
+                i.putExtra("outputX", 300);
+                i.putExtra("outputY", 300);
+                i.putExtra("scale", true);
+                i.putExtra("return-data", true);
                 startActivityForResult(i,PICK_IMAGE);
                 return true;
             case R.id.del:
@@ -202,18 +215,28 @@ else{
 //            String picturePath = cursor.getString(columnIndex);
 //            cursor.close();
             Bitmap bitmap;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),selectedImage);
+
+                bitmap  = (Bitmap) data.getExtras().get("data");
+               // bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),selectedImage);
                 ImageView imageView = findViewById(R.id.dp);
                 imageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                Intent intent1 =getIntent();
+                int position = intent1.getIntExtra("RPosition",0);
+                Name name = nameList.get(position);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100,stream);
+                name.setImage(stream.toByteArray());
+                db.updateName(name);
+                db.notify();
+
+
+
 
             //   imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 //
 //             String stringUri = selectedImage.getPath();
 //             imageView.setImageURI(Uri.parse(stringUri));
+
         }
         if (requestCode == PICK_MONEY)
          { //LayoutInflater inflater = getLayoutInflater();
@@ -305,7 +328,7 @@ else{
                name.setMoney(String.valueOf(finalMoney));
                db.updateName(name);
            }
-            MainActivity.dataChangeStatus=1;
+
         }
 
 

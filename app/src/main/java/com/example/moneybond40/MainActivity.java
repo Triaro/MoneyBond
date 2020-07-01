@@ -20,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -37,10 +38,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     MyDBHandler db = new MyDBHandler(MainActivity.this);
+    SwipeRefreshLayout mSwipeRefreshLayout;
     private FirebaseAuth mAuth;
     private RecyclerViewAdapter recyclerViewAdapter;
     public ArrayList<Name> nameArrayList;
-    public static int dataChangeStatus=0;
+    //public static int dataChangeStatus=0;
 
    // private ArrayList<LentName> lentNameList = new ArrayList<>();
    static final int REQUEST_SELECT_PHONE_NUMBER = 1;
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(myToolbar);
         //RecyclerView initialisation
+        mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -63,11 +67,18 @@ public class MainActivity extends AppCompatActivity {
         TextView rupee1=findViewById(R.id.rupee1);
         TextView Money=findViewById(R.id.Money);
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                finish();
+                overridePendingTransition( 0, 0);
+                startActivity(getIntent());
+                overridePendingTransition( 0, 0);
+            }
+        });
 
-if(dataChangeStatus==1)
-{
-    recyclerViewAdapter.notifyDataSetChanged();
-}
+
         nameArrayList = new ArrayList<>();
 
         if(db.getAllNames()!=null) {
@@ -169,6 +180,12 @@ if(dataChangeStatus==1)
                 return true;
             case R.id.help:
                 startActivity(new Intent(this, Help.class));
+                return true;
+            case R.id.refresh:
+                finish();
+                overridePendingTransition( 0, 0);
+                startActivity(getIntent());
+                overridePendingTransition( 0, 0);
                 return true;
             case R.id.deleteAll:
                 nameArrayList = new ArrayList<>();

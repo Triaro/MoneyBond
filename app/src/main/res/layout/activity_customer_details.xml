@@ -66,16 +66,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar2">
 
-        <ImageView
+
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/dp"
-            android:layout_width="188dp"
-            android:layout_height="188dp"
+            android:layout_width="194dp"
+            android:layout_height="189dp"
+            android:background="@drawable/layout_bg"
             app:layout_constraintBottom_toTopOf="@+id/status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/status"

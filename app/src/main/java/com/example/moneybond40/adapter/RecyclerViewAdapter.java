@@ -2,6 +2,8 @@ package com.example.moneybond40.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +61,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.Name.setText(name.getName());
         holder.Money.setText(name.getMoney());
+        byte[] image =name.getImage();
+        if(image!=null)
+            holder.iconButton.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
+        else
+            holder.iconButton.setImageResource(R.drawable.abstractuser);
         if(name.getMoney().equals("0"))
         {
             holder.Money.setTextColor(context.getResources().getColor(R.color.divider));
@@ -188,14 +195,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             String customerName= name.getName();
             String customerMoney= name.getMoney();
             String customerNumber= name.getNumber();
+            byte[] customerImage= name.getImage();
 
-            Toast.makeText(context,"the id is "+ name.getId()+" Amount is "+name.getMoney()+" Position is "+position,Toast.LENGTH_LONG).show();
+            //Toast.makeText(context,"the id is "+ name.getId()+" Amount is "+name.getMoney()+" Position is "+position,Toast.LENGTH_LONG).show();
             Intent intent = new Intent(context, CustomerDetails.class);
             intent.putExtra("RId",customerId);
             intent.putExtra("RPosition",position);
             intent.putExtra("RName", customerName);
             intent.putExtra("RMoney", customerMoney);
             intent.putExtra("RNumber", customerNumber);
+            intent.putExtra("RImage", customerImage);
             context.startActivity(intent);
         }
 
