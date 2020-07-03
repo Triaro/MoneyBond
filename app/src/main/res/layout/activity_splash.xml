@@ -9,9 +9,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="243dp"
-        android:layout_height="225dp"
-        android:background="#00FFFFFF"
+        android:layout_width="247dp"
+        android:layout_height="221dp"
         android:src="@mipmap/ic_launcher_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

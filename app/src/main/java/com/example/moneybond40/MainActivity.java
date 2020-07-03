@@ -27,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -194,6 +195,20 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                return true;
+            case R.id.share1:
+                Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+                whatsappIntent.setType("text/plain");
+                whatsappIntent.setPackage("com.whatsapp");
+                whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Heyy!! Check out this cool app *MoneyBond* and download it to manage your money.Now, lent or borrow money from your friends with a proper record on your hand." +
+                        " Downlod it from google Playstore now");
+                whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try {
+                startActivity(whatsappIntent);
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this,"Whatsapp have not been installed",Toast.LENGTH_SHORT).show();
+            }
+
                 return true;
             case R.id.logOut:
                 FirebaseAuth.getInstance().signOut();

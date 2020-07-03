@@ -17,6 +17,9 @@
         android:id="@+id/info"
         android:title="App Info" />
     <item
+        android:id="@+id/share1"
+        android:title="Share App" />
+    <item
         android:id="@+id/logOut"
         android:title="Log Out" />
 </menu>
