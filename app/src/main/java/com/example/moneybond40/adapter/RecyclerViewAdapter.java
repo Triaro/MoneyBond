@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,12 @@ import com.example.moneybond40.R;
 import com.example.moneybond40.data.MyDBHandler;
 import com.example.moneybond40.model.Name;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
@@ -61,6 +67,37 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.Name.setText(name.getName());
         holder.Money.setText(name.getMoney());
+
+        if(name.getTime()!=null)
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh.mm aa");
+            Date past = format.parse(name.getTime());
+            Date now = new Date();
+            long seconds=TimeUnit.MILLISECONDS.toSeconds(now.getTime() - past.getTime());
+            long minutes=TimeUnit.MILLISECONDS.toMinutes(now.getTime() - past.getTime());
+            long hours=TimeUnit.MILLISECONDS.toHours(now.getTime() - past.getTime());
+            long days= TimeUnit.MILLISECONDS.toDays(now.getTime() - past.getTime());
+            if(seconds<60)
+            {   holder.Time.setText("Updated "+ seconds+" seconds ago");
+
+            }
+            else if(minutes<60)
+            {   holder.Time.setText("Updated "+ minutes +" minutes ago");
+
+            }
+            else if(hours<24)
+            {   holder.Time.setText("Updated "+ hours +" hours ago");
+
+            }
+            else
+            {   holder.Time.setText("Updated "+ days +" days ago");
+
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         byte[] image =name.getImage();
         if(image!=null)
             holder.iconButton.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
@@ -159,6 +196,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView Name;
         public TextView Money;
+        public TextView Time;
         public TextView rupee1;
         public EditText money1;
         public ImageView iconButton ;
@@ -174,6 +212,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             Name = itemView.findViewById(R.id.Name);
             Money = itemView.findViewById(R.id.Money);
+            Time = itemView.findViewById(R.id.time2);
             rupee1 = itemView.findViewById(R.id.rupee1);
             iconButton = itemView.findViewById(R.id.icon_button);
             del = itemView.findViewById(R.id.del);
@@ -195,6 +234,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             String customerName= name.getName();
             String customerMoney= name.getMoney();
             String customerNumber= name.getNumber();
+            String customerTime= name.getTime();
             byte[] customerImage= name.getImage();
 
             //Toast.makeText(context,"the id is "+ name.getId()+" Amount is "+name.getMoney()+" Position is "+position,Toast.LENGTH_LONG).show();
@@ -205,7 +245,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             intent.putExtra("RMoney", customerMoney);
             intent.putExtra("RNumber", customerNumber);
             intent.putExtra("RImage", customerImage);
+            intent.putExtra("RTime", customerTime);
             context.startActivity(intent);
+            name.overridePendingTransition(R.anim.bottom_up, R.anim.nothing);
         }
 
 

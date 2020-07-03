@@ -28,7 +28,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String create= "CREATE TABLE " + Params.TABLE_NAME5 + "("
                 + Params.KEY_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + Params.KEY_NAME + " TEXT, " +
-                Params.KEY_MONEY+ " TEXT, "+ Params.KEY_NUMBER +  " TEXT, " + Params.KEY_COLORSTATUS + " TEXT, " + Params.KEY_STATUS + " TEXT, " + Params.KEY_IMAGE + " BLOB " + ")";
+                Params.KEY_MONEY+ " TEXT, "+ Params.KEY_NUMBER +  " TEXT, " + Params.KEY_COLORSTATUS + " TEXT, " + Params.KEY_STATUS + " TEXT, " + Params.KEY_IMAGE + " BLOB," + Params.KEY_TIME + " TEXT " + ")";
         Log.d("dbAbhi", "Query being run is "+ create);
         db.execSQL(create);
 
@@ -59,6 +59,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(Params.KEY_COLORSTATUS, name.getColorStatus());
         values.put(Params.KEY_STATUS, name.getStatus());
         values.put(Params.KEY_IMAGE, name.getImage());
+        values.put(Params.KEY_TIME, name.getTime());
 
 
         db.insert(Params.TABLE_NAME5, null, values);
@@ -85,6 +86,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 name.setColorStatus(cursor.getInt(4));
                 name.setStatus(cursor.getString(5));
                 name.setImage(cursor.getBlob(6));
+                name.setTime(cursor.getString(7));
 
                 nameList.add(name);
             }while(cursor.moveToNext());
@@ -106,6 +108,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(Params.KEY_COLORSTATUS, name.getColorStatus());
         values.put(Params.KEY_STATUS, name.getStatus());
         values.put(Params.KEY_IMAGE, name.getImage());
+        values.put(Params.KEY_TIME, name.getTime());
         //Lets update now
         db.update(Params.TABLE_NAME5, values, Params.KEY_ID
                 + "=?", new String[]{String.valueOf(name.getId())});

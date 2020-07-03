@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,6 +62,7 @@ public class CustomerDetails extends AppCompatActivity {
         int position = intent1.getIntExtra("RPosition",0);
         String number = intent1.getStringExtra("RNumber");
         String name = intent1.getStringExtra("RName");
+        String time = intent1.getStringExtra("RTime");
         byte[] image = intent1.getByteArrayExtra("RImage");
         TextView status1= findViewById(R.id.status);
         TextView netMoney1 = findViewById(R.id.netMoney);
@@ -87,6 +89,9 @@ public class CustomerDetails extends AppCompatActivity {
         CustomerName.setText(name);
         TextView CustomerNumber = findViewById(R.id.customerNumber);
         CustomerNumber.setText(number);
+        TextView CustomerTime = findViewById(R.id.time);
+        if(time!=null)
+        CustomerTime.setText("On "+time);
         ImageView dp=findViewById(R.id.dp);
         if(image!=null)
         dp.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
@@ -112,6 +117,7 @@ else{
             @Override
             public void onClick(View view) {
                 finish();
+                overridePendingTransition( R.anim.nothing,R.anim.bottom_down);
 
             }
         });
@@ -125,6 +131,7 @@ else{
                 intentAdd.putExtra("status","Enter the amount you lent");
                 status=1;
                 startActivityForResult(intentAdd,PICK_MONEY);
+                overridePendingTransition(R.anim.bottom_up, R.anim.nothing);
 
 
             }
@@ -136,6 +143,7 @@ else{
                 intentAdd.putExtra("status","Enter the amount you borrowed");
                 status=0;
                 startActivityForResult(intentAdd, PICK_MONEY);
+                overridePendingTransition(R.anim.bottom_up, R.anim.nothing);
 
 
             }
@@ -280,7 +288,7 @@ else{
                     notify();
                 }
 
-        if (requestCode == PICK_MONEY)
+        if (requestCode == PICK_MONEY && resultCode == RESULT_OK && data != null)
          { //LayoutInflater inflater = getLayoutInflater();
 //             View myView = inflater.inflate(R.layout.row, null);
              TextView status1= findViewById(R.id.status);
@@ -303,6 +311,7 @@ else{
              }
 
             String money2=data.getExtras().getString("money");
+            String time=data.getExtras().getString("time");
             int money = Integer.parseInt(money2);
             String netMoney=netMoney1.getText().toString();
             int prevMoney = Integer.parseInt(netMoney);
@@ -336,7 +345,7 @@ else{
 
                netMoney1.setText(String.valueOf(finalMoney));
                name.setMoney(String.valueOf(finalMoney));
-               db.updateName(name);
+
 
                Log.d("check7","Name updated of id "+name.getId()+ " with amount "+name.getMoney());
            }
@@ -368,8 +377,12 @@ else{
 
                netMoney1.setText(String.valueOf(finalMoney));
                name.setMoney(String.valueOf(finalMoney));
-               db.updateName(name);
+
            }
+            TextView Time= findViewById(R.id.time);
+           Time.setText("On "+time);
+           name.setTime(time);
+           db.updateName(name);
 
         }
 

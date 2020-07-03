@@ -3,6 +3,7 @@ package com.example.moneybond40;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moneybond40.adapter.RecyclerViewAdapter;
 //import com.example.moneybond40.adapter.RecyclerViewAdapter2;
@@ -25,7 +27,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.w3c.dom.NameList;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -65,11 +70,27 @@ public class AddMoney extends AppCompatActivity {
 //                db.addHistory(history);
 //                Log.d("check2", "AddMoney reached");
 //                CustomerDetails.historyArrayList.add(history);
-                Intent retData=new Intent();
-                String money1= money.getText().toString();
-                retData.putExtra("money",money1);
-                setResult(RESULT_OK, retData);
-                finish();
+                if( money.getText().toString().equals("")){
+                    Toast.makeText(AddMoney.this, "Please enter something", Toast.LENGTH_SHORT).show();
+//
+                }
+                else {Intent retData=new Intent();
+                    String money1= money.getText().toString();
+                    DateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy hh.mm aa");
+                    String currentTime = dateFormat2.format(new Date());
+                    retData.putExtra("money",money1);
+                    retData.putExtra("time",currentTime);
+                    setResult(RESULT_OK, retData);
+                    finish();
+                    overridePendingTransition( R.anim.nothing,R.anim.bottom_down);}
+            }
+        });
+        ImageButton cancel=findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                         finish();
+                overridePendingTransition( R.anim.nothing,R.anim.bottom_down);
             }
         });
 

@@ -15,6 +15,7 @@ public class Name extends Activity {
     private String number;
     private int colorStatus;
     private String status;
+    private String time;
     private byte[] image;
 
     public Name(int id) {
@@ -61,7 +62,7 @@ public class Name extends Activity {
     public byte[] getImage() {
             return image;
     }
-//        return BitmapFactory.decodeByteArray(image1, 0, image1.length);
+    public String getTime() { return time; }
 
     public void setId(int id) {this.id = id;  }
 
@@ -80,5 +81,7 @@ public class Name extends Activity {
     public void setImage(byte[] image) {
             this.image=image;
     }
+
+    public void setTime(String time) {this.time = time; }
 
 }

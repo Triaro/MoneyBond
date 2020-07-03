@@ -20,12 +20,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize Firebase Auth
+
         mAuth = FirebaseAuth.getInstance();
 
         super.onCreate(savedInstanceState);
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        blink();
         nameArrayList = new ArrayList<>();
 
         if(db.getAllNames()!=null) {
@@ -148,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
                     if (intent.resolveActivity(getPackageManager()) != null) {
                         startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
+                        overridePendingTransition(R.anim.bottom_up, R.anim.nothing);
                     }
 
 
@@ -162,6 +167,68 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        blink();
+        nameArrayList = new ArrayList<>();
+
+        if(db.getAllNames()!=null) {
+            // get all names
+            List<Name> nameList = db.getAllNames();
+
+
+            for (Name name : nameList) {
+
+                Log.d("dbDisplay", "Id " + name.getId() + "\n" +
+                        "Name " + name.getName() + "\n" +
+                        "Money " + name.getMoney() + "Number " + name.getNumber() + "\n");
+                nameArrayList.add(name);
+
+                //db.deleteName(lentName.getId());
+            }
+
+
+        }
+        //Using RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, nameArrayList);
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private void blink() {
+        TextView txt = findViewById(R.id.swipe);
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(1000); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(5);
+        txt.startAnimation(anim);
+        txt.setVisibility(View.INVISIBLE);
+    }
+
+//        final Handler handler = new Handler();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                int timeToBlink = 1000;    //in milissegunds
+//                try{Thread.sleep(timeToBlink);}catch (Exception e) {}
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        TextView txt = findViewById(R.id.swipe);
+//                        if(txt.getVisibility() == View.VISIBLE){
+//                            txt.setVisibility(View.INVISIBLE);
+//                        }else{
+//                            txt.setVisibility(View.VISIBLE);
+//                        }
+//                        blink();
+//                    }
+//                },5);
+//            }
+//        }).start();
+
 
 
 

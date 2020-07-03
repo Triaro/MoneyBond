@@ -34,18 +34,30 @@
 
     <ImageButton
         android:id="@+id/save"
-        android:layout_width="106dp"
-        android:layout_height="93dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginRight="48dp"
+        android:layout_width="124dp"
+        android:layout_height="125dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginLeft="68dp"
+        android:layout_marginTop="20dp"
         android:background="#00FFFFFF"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:scrollbarSize="10dp"
-        android:tint="#6ACF354C"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enteredMoney"
+        app:srcCompat="@drawable/check" />
+
+    <ImageButton
+        android:id="@+id/cancel"
+        android:layout_width="85dp"
+        android:layout_height="83dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="96dp"
+        android:layout_marginRight="96dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enteredMoney"
-        app:srcCompat="@android:drawable/checkbox_on_background" />
+        app:srcCompat="@drawable/wrong" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -69,4 +81,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

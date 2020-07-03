@@ -18,5 +18,6 @@ public class Params {
     public static final String KEY_COLORSTATUS = "ColorStatus";
     public static final String KEY_STATUS= "Status";
     public static final String KEY_IMAGE= "Image";
+    public static final String KEY_TIME= "Time";
 
 }
