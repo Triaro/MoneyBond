@@ -23,4 +23,14 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="call">Call</string>
+    <string name="change_picture">Change Picture</string>
+    <string name="remind_via_whatsapp">Remind via Whatsapp</string>
+    <string name="remove">Remove</string>
+    <string name="textview">TextView</string>
+    <string name="this_is_a_reminder">This is a reminder!!</string>
+    <string name="you_had_borrowed">You had borrowed</string>
+    <string name="textview">TextView</string>
+    <string name="textview">TextView</string>
+    <string name="moneybond">MoneyBond</string>
 </resources>

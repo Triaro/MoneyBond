@@ -14,6 +14,7 @@ import com.example.moneybond40.model.Name;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -110,13 +111,13 @@ public class MainActivity extends AppCompatActivity {
         class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
             private Drawable mDivider;
 
-            public SimpleDividerItemDecoration(Context context) {
+            private SimpleDividerItemDecoration(Context context) {
                 mDivider = context.getResources().getDrawable(R.drawable.divider);
 
             }
 
             @Override
-            public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            public void onDrawOver(Canvas c, RecyclerView parent, @NonNull RecyclerView.State state) {
                 int left = 250;
                 int right = parent.getWidth() - parent.getPaddingRight();
 
@@ -278,10 +279,11 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             case R.id.logOut:
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(this, RegisterNumber.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                Toast.makeText(this,"Sorry, this feature will be updated soon!",Toast.LENGTH_SHORT).show();
+//                FirebaseAuth.getInstance().signOut();
+//                Intent intent = new Intent(this, RegisterNumber.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -299,11 +301,11 @@ public class MainActivity extends AppCompatActivity {
             Uri contactUri = data.getData();
             String id, name, phone, hasPhone;
             int idx;
+            assert contactUri != null;
             Cursor cursor = getContentResolver().query(contactUri, null, null, null, null);
             // If the cursor returned is valid, get the phone number
             if (cursor != null && cursor.moveToFirst()) {
                 idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
-                id = cursor.getString(idx);
 
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 name = cursor.getString(idx);

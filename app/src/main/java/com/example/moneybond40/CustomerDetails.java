@@ -2,16 +2,25 @@ package com.example.moneybond40;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -160,14 +170,18 @@ else{
         return true;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+        Intent intent =getIntent();
+        final int position = intent.getIntExtra("RPosition",0);
+       final int id = intent.getIntExtra("RId", 0);
+        final List<Name> nameList = db.getAllNames();
+        Name name = nameList.get(position);
         switch (item.getItemId()) {
             case R.id.call:
-                Intent intent1 =getIntent();
-                int position = intent1.getIntExtra("RPosition",0);
-                Name name = nameList.get(position);
+
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
                 callIntent.setData(Uri.parse("tel:" +name.getNumber()));
                 startActivity(callIntent);
@@ -210,24 +224,85 @@ else{
                 builder.show();
                 return true;
             case R.id.del:
-                Intent intentCall = getIntent();
-                int id = intentCall.getIntExtra("RId", 0);
-                int position1 = intentCall.getIntExtra("RPosition",0);
-                List<Name> nameList = db.getAllNames();
-                 // Remove the item on remove/button click
-                nameList.remove(position1);
-                db.deleteName(id);
-                notifyAll();
-                finish();
+          // Remove the item on remove/button click
+                final CharSequence[] options2 = { "Confirm", "Cancel" };
+
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setTitle("Confirm remove "+ name.getName()+"?");
+
+                builder2.setItems(options2, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+
+                        if (options2[item].equals("Confirm")) {
+                            nameList.remove(position);
+                            db.deleteName(id);
+                            notifyAll();
+                            finish();
+
+                       } else if (options2[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder2.show();
+
                 return true;
             case R.id.share:
-                Uri imgUri = Uri.parse("android.resource://" + getPackageName() + "/drawable/triaro_png");
+
+                View view1;
+                view1 = LayoutInflater.from(getApplicationContext()).inflate(R.layout.reminder_message, null);
+                LinearLayoutCompat view = view1.findViewById(R.id.message);
+                TextView name_message =view1.findViewById(R.id.name_message);
+                TextView time_message =view1.findViewById(R.id.time_message);
+                TextView money_message =view1.findViewById(R.id.money_message);
+                name_message.setText("Hello! "+ name.getName()+",");
+                time_message.setText("On "+name.getTime());
+                money_message.setText("₹ "+name.getMoney());
+
+                Bitmap returnedBitmap;
+                try {
+
+                    view.setDrawingCacheEnabled(true);
+
+                    view.measure(View.MeasureSpec.makeMeasureSpec(800, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(600, View.MeasureSpec.UNSPECIFIED));
+                    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+                    view.offsetLeftAndRight(100);
+
+                    view.buildDrawingCache(true);
+                    returnedBitmap = Bitmap.createBitmap(view.getDrawingCache());
+                    Canvas canvas = new Canvas(returnedBitmap);
+                    //Get the view's background
+                    Drawable bgDrawable = view.getBackground();
+                    if (bgDrawable != null) {
+                        //has background drawable, then draw it on the canvas
+                        bgDrawable.draw(canvas);
+                    } else {
+                        //does not have background drawable, then draw white background on the canvas
+                        canvas.drawColor(Color.WHITE);
+                    }
+                    // draw the view on the canvas
+                    view.draw(canvas);
+                    //Define a bitmap with the same size as the view
+                    view.setDrawingCacheEnabled(false);
+                }catch (Exception e){
+                    return false;
+                }
+                Bitmap bitmap= returnedBitmap;
+
+
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Message3", null);
+                Uri imageUri = Uri.parse(path);
                 Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
                 whatsappIntent.setType("text/plain");
                 whatsappIntent.setPackage("com.whatsapp");
-                whatsappIntent.putExtra(Intent.EXTRA_TEXT, "The text you wanted to share");
-                whatsappIntent.setType("image/*");
-                whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+                whatsappIntent.putExtra(Intent.EXTRA_STREAM, "This is reminder!!! Download the *MoneyBond* app from playstore now!!");
+                whatsappIntent.setType("image/jpeg");
+                whatsappIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
 
                 whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 

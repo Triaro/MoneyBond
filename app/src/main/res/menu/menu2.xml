@@ -3,14 +3,14 @@
 
     <item
         android:id="@+id/call"
-        android:title="call" />
-    <item
-        android:id="@+id/changePicture"
-        android:title="change picture" />
-    <item
-        android:id="@+id/del"
-        android:title="remove" />
+        android:title="@string/call" />
     <item
         android:id="@+id/share"
-        android:title="share" />
+        android:title="@string/remind_via_whatsapp" />
+    <item
+        android:id="@+id/changePicture"
+        android:title="@string/change_picture" />
+    <item
+        android:id="@+id/del"
+        android:title="@string/remove" />
 </menu>

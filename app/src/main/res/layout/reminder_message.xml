@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/message"
+    android:orientation="vertical"
+        >
+
+
+        <TextView
+        android:id="@+id/name_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/textview"
+        android:textColor="#000000"
+            android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="60dp"
+        android:text="@string/this_is_a_reminder"
+        android:textColor="#000000"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/you_had_borrowed"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/money_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="170dp"
+        android:text="@string/textview"
+        android:textColor="#F51B1B"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/time_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="140dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/textview"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
+
