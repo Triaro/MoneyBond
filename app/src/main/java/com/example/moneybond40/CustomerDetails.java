@@ -187,7 +187,9 @@ else{
                 startActivity(callIntent);
                 return true;
             case R.id.changePicture:
-                final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+
+
+                final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Choose your profile picture");
@@ -205,16 +207,16 @@ else{
 //                            takePicture.putExtra("outputY", 300);
 //                            takePicture.putExtra("scale", true);
 //                            takePicture.putExtra("return-data", true);
-                            startActivityForResult(takePicture,CAPTURE_IMAGE);
+                            startActivityForResult(takePicture, CAPTURE_IMAGE);
 
                         } else if (options[item].equals("Choose from Gallery")) {
-                            Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             i.putExtra("crop", "true");
                             i.putExtra("outputX", 300);
                             i.putExtra("outputY", 300);
                             i.putExtra("scale", true);
                             i.putExtra("return-data", true);
-                            startActivityForResult(i , PICK_IMAGE);
+                            startActivityForResult(i, PICK_IMAGE);
 
                         } else if (options[item].equals("Cancel")) {
                             dialog.dismiss();
@@ -222,7 +224,9 @@ else{
                     }
                 });
                 builder.show();
-                return true;
+
+            return true;
+
             case R.id.del:
           // Remove the item on remove/button click
                 final CharSequence[] options2 = { "Confirm", "Cancel" };
@@ -250,7 +254,9 @@ else{
 
                 return true;
             case R.id.share:
-
+        TextView status=findViewById(R.id.status);
+        if(status.getText().toString().equals("You have Lent "+name.getName()))
+        {
                 View view1;
                 view1 = LayoutInflater.from(getApplicationContext()).inflate(R.layout.reminder_message, null);
                 LinearLayoutCompat view = view1.findViewById(R.id.message);
@@ -311,7 +317,11 @@ else{
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(this,"Whatsapp have not been installed",Toast.LENGTH_SHORT).show();
                 }
+          }
+             else
+            Toast.makeText(this,"You can only remind if you have lent money",Toast.LENGTH_LONG).show();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

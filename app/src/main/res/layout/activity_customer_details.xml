@@ -147,12 +147,12 @@
 
         <Button
             android:id="@+id/lentButton"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginStart="64dp"
             android:layout_marginLeft="64dp"
             android:background="@drawable/gradient_two"
-            android:text="Lent "
+            android:text="You Lent "
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,12 +160,12 @@
 
         <Button
             android:id="@+id/borrowedButton"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginEnd="64dp"
             android:layout_marginRight="64dp"
             android:background="@drawable/gradient_two"
-            android:text="Borrowed"
+            android:text="You Borrowed"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
